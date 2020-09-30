@@ -16,7 +16,6 @@ from nltk.tokenize import RegexpTokenizer
 import string
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-import PySimpleGUI as sg
 from bs4 import BeautifulSoup
 
 def read_stop_words():
@@ -118,7 +117,10 @@ def scrapper_sites(url, current_url):
     session = requests.Session()
     s = session.get(sito)
     soup = BeautifulSoup(s.text, 'html.parser')
-    title = [soup.title.string]
+    if soup.title != None:
+        title = [soup.title.string]
+    else:
+        title = []
     titles = title #+ [item.string for item in soup.find_all('h1')]
     text = [item.string for item in soup.find_all('p')]
     #if titles != [] and text != [] and titles[0] != None and text[0] != None :
