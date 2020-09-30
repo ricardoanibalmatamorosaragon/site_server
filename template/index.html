@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Basic Web Page</title>
+    </head>
+    <body>
+	<div class="visual">
+
+	<div>
+		<form name="access" action="http://0.0.0.0:8080/view_graphics" method="post">
+			<label for="keyw">Insert URL</label>
+			<input type="text" id="keyword" name="keyword" required="required" pattern="(?!^ +$)^.+$">
+			<br><br>
+			<input type="submit" onclick="loadShow()" id="buttonUpload" value="Start"/>
+
+		</form>
+        <div id='viewLoader' style="display:none" class="loader"></div>
+	</div>
+</div>
+
+<script>
+
+function loadShow(){
+    document.getElementById("viewLoader").style.display = "block";
+}
+
+</script>
+
+
+    </body>
+</html>
