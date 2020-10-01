@@ -135,6 +135,9 @@ def scrapper_sites(url, current_url):
   return texts
 
 def create_word_cloud(texts, name_wc, number_words= 200):
+  if os.path.isfile('./temp/new_words.txt'):
+    os.remove("./temp/new_words.txt")
+	
   stop_words = read_stop_words()
   processed_texts = []
   for text in texts:
@@ -156,29 +159,49 @@ def create_word_cloud(texts, name_wc, number_words= 200):
   plt.imshow(wordcloud, interpolation='bilinear')
   plt.axis("off")
   #plt.show()
-  plt.savefig('./wordClouds/'+name_wc+'.png')
+  plt.savefig('./template/wordClouds/'+name_wc+'.png')
+  return './template/wordClouds/'+name_wc+'.png'
   
-def update_wc(name_wc):
-	with open("delete_words.txt") as f:
+def update_wc(name_wc, words):
+	"""with open("delete_words.txt") as f:
 		delete_words = list(set([line.rstrip('\n') for line in f]))
 	f.close()
+	"""
+	delete_words = words
+	if os.path.isfile('./temp/temp_words.txt'):
+		with open("./temp/temp_words.txt") as f:
+			words_wc = [line.rstrip('\n') for line in f]
+	else:
+		with open("./temp/new_words.txt") as f:
+			words_wc = [line.rstrip('\n') for line in f]
 	
-	with open("./temp/temp_words.txt") as f:
-		words_wc = [line.rstrip('\n') for line in f]
-	
-	print(len(words_wc))
-	print(len(delete_words))
+	#print(len(words_wc))
+	#print(len(delete_words))
 	
 
 	for word in delete_words:
 		words_wc = list(filter(lambda a: a != word, words_wc))
-	print(len(words_wc))
+		
+	if os.path.isfile('./temp/temp_words.txt'):
+		os.remove("./temp/temp_words.txt")
+	
+	#save words
+	with open('./temp/new_words.txt', 'w') as f:
+		print('nuove parole')
+		for item in words_wc:
+			f.write("%s\n" % item)
+
+	#print(len(words_wc))
 	wordcloud = WordCloud(width=1600, height=800, background_color ='white', max_words=100, prefer_horizontal=1,
 				contour_width=2, contour_color='black',min_font_size = 10).generate(' '.join(words_wc))
 	plt.figure(figsize=(20,10), facecolor = None)
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
-	plt.savefig('./wordClouds/'+name_wc+'.png')
+	temp = "_".join(delete_words)
+	name_wc =temp
+	#print(name_wc)
+	plt.savefig('./template/wordClouds/'+name_wc+'.png')
+	return './template/wordClouds/'+name_wc+'.png'
 	
 
 def scrapper_main(values):
@@ -197,7 +220,7 @@ def scrapper_main(values):
 	current_url = path
 	
 	texts = scrapper_sites(values[0], current_url)
-	create_word_cloud(texts,values[1],100)
+	return create_word_cloud(texts,values[1],100)
 	
 def ciao():
 	print('ciao')

@@ -1,9 +1,39 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Basic Web Page</title>
-    </head>
-    <body>
-		Hello World!
-    </body>
+	<style>
+        .visualFrame {
+          text-align: center;
+          position: absolute;
+          top:40%;
+          left: 60%;
+          transform: translate(-50%, -50%);
+          color: white;
+        }
+    </style>
+
+<body>
+
+<h2>WordCloud</h2>
+
+<p>risultato:</p>
+<div class="visualFrame">
+    <!--<iframe width="1200" height="700" src='prova.png'></iframe>-->
+	<img src = {{ graph }} alt="Word cloud" width="1200" height="800">
+
+</div>
+
+<div>
+		<form name="access" action="http://127.0.0.1:5000/view_graphics" method="post">
+			<label for="keyw">Insert words (separate with ',')</label>
+			<input type="text" autocomplete="off" id="update" name="update" required="required" pattern="(?!^ +$)^.+$">
+			<br><br>
+			<input type="submit" onclick="loadShow()" id="buttonUpload" value="Update"/>
+
+		</form>
+		
+		<form action="http://127.0.0.1:5000/home">
+			<input type="submit" value="Go to Home" />
+		</form>
+	</div>
+</body>
 </html>
