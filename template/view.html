@@ -9,6 +9,15 @@
           transform: translate(-50%, -50%);
           color: white;
         }
+		.visualFrame_barplot{
+          text-align: center;
+          position: absolute;
+          top:80%;
+          left: 70%;
+          transform: translate(-50%, -50%);
+          color: white;
+        }
+
     </style>
 
 <body>
@@ -21,9 +30,14 @@
 	<img src = {{ graph }} alt="Word cloud" width="1200" height="800">
 
 </div>
+<div class="visualFrame_barplot">
+    <!--<iframe width="1200" height="700" src='prova.png'></iframe>-->
+	<iframe width="1200" height="500" src={{ barplot }}></iframe>
+	<!--<img src = {{ barplot }} alt="barplot" width="1200" height="800">-->
 
+</div>
 <div>
-		<form name="access" action="http://127.0.0.1:5000/view_graphics" method="post">
+		<form name="access" action="http://13.94.150.149:8050/view_graphics" method="post">
 			<label for="keyw">Insert words (separate with ',')</label>
 			<input type="text" autocomplete="off" id="update" name="update" required="required" pattern="(?!^ +$)^.+$">
 			<br><br>
@@ -31,7 +45,7 @@
 
 		</form>
 		
-		<form action="http://127.0.0.1:5000/home">
+		<form action="http://13.94.150.149:8050/home">
 			<input type="submit" value="Go to Home" />
 		</form>
 	</div>

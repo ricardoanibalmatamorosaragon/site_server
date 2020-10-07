@@ -29,13 +29,13 @@ def entryPoint():
 		words = request.form.get('update')
 		words = words.replace(' ', '')
 		list_words = words.split(',')
-		indirizzo_update = wc.update_wc('update', list_words)
-		return render_template('view.html', graph = indirizzo_update)
+		indirizzo_update , barplot = wc.update_wc('update', list_words)
+		return render_template('view.html', graph = indirizzo_update, barplot=barplot)
 	indirizzo = wc.scrapper_main([keyword, 'wc'])
 	return render_template('view.html', graph = indirizzo)
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0',port=8050, debug=True)
+	app.run(host='0.0.0.0',port=8050 ,debug=True)
 	#app.run(debug=True)
 
 #"https://my.customscoop.com/reports/viewclips/reportview.cfm?clipReportTemplateId=24&savedNewsletterName=&savedNewsletterDescription=&start=09%2F01%2F20&daySpan=&end=09%2F27%2F20&hourSpan=&kwid=363205&kwid=361303&kwid=363976&kwid=363975&kwid=361298&kwid=361299&kwid=361300&kwid=361301&ClipRatingList=181983&HeadlineText=&OrderBy=time&maxResults=&CompeteGreater=&CompeteLess=&alexaGreater=&alexaLess=&clipSearchCirculationSelect=-1&circulationGreater=&circulationLess=&autotaguserfolderid=&nowait=1"

@@ -17,6 +17,7 @@ import string
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
+import plotly.express as px
 
 def read_stop_words():
   with open("./temp/stop_word.txt", encoding="utf-8") as f:
@@ -134,6 +135,35 @@ def scrapper_sites(url, current_url):
       save_file(element, current_url)
   return texts
 
+def graphic_top_words(name = 'bar_plot', number_words =10):
+  if os.path.isfile('./temp/temp_words.txt'):
+    with open("./temp/temp_words.txt") as f:
+      words_wc = [line.rstrip('\n') for line in f]
+  else:
+    with open("./temp/new_words.txt") as f:
+      words_wc = [line.rstrip('\n') for line in f]
+	
+  # initializing a dictionary
+  d = {}
+
+  # counting number of times each word comes up in list of words
+  for key in words_wc: 
+    d[key] = d.get(key, 0) + 1
+
+  lista = sorted(d.items(), key = lambda x: x[1], reverse = True)
+  #fig = plt.figure()
+  #ax = fig.add_axes([0,0,1,1])
+  df = pd.DataFrame(lista[:number_words], columns =['words', 'frequency'])
+  #df = df.sort_values(by='frequency', ascending=True)
+  #ax.barh(df.words,df.frequency)
+  #plt.savefig('./template/histograms/'+name+'.png')
+  fig = px.bar(df, x='words', y='frequency')
+  fig.write_html('./template/histograms/'+name+'.html')
+  return './template/histograms/'+name+'.html'
+
+plt.show()
+  
+  
 def create_word_cloud(texts, name_wc, number_words= 200):
   if os.path.isfile('./temp/new_words.txt'):
     os.remove("./temp/new_words.txt")
@@ -191,6 +221,8 @@ def update_wc(name_wc, words):
 		for item in words_wc:
 			f.write("%s\n" % item)
 
+	
+	
 	#print(len(words_wc))
 	wordcloud = WordCloud(width=1600, height=800, background_color ='white', max_words=100, prefer_horizontal=1,
 				contour_width=2, contour_color='black',min_font_size = 10).generate(' '.join(words_wc))
@@ -200,8 +232,10 @@ def update_wc(name_wc, words):
 	temp = "_".join(delete_words)
 	name_wc =temp
 	#print(name_wc)
+	#top ten words graphic
+	link_graph = graphic_top_words(name_wc,10)
 	plt.savefig('./template/wordClouds/'+name_wc+'.png')
-	return './template/wordClouds/'+name_wc+'.png'
+	return ('./template/wordClouds/'+name_wc+'.png', link_graph)
 	
 
 def scrapper_main(values):
