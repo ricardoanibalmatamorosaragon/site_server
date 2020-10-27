@@ -6,6 +6,7 @@ import time
 import lxml.etree as etree
 import re
 import glob, os, os.path
+from nltk import ngrams
 from bs4 import BeautifulSoup
 from collections import Counter
 import numpy as np
@@ -161,7 +162,39 @@ def graphic_top_words(name = 'bar_plot', number_words =10):
   fig.write_html('./template/histograms/'+name+'.html')
   return './template/histograms/'+name+'.html'
 
-plt.show()
+
+def trigrams(text, n = 3):
+  total_string = ''
+  for frase in text:
+    total_string += frase
+  grams = ngrams(total_string.split(), n)
+  list_grams = []
+  for gram in grams:
+    list_grams.append(gram)
+  return list_grams
+
+def create_word_cloud_trigrams(texts, stop_words, number_words= 50):
+
+  processed_texts = []
+  for text in texts:
+    text_join = preprocessing(text, stop_words)
+    processed_texts.append(" ".join(text_join))
+  texts_trigrams = trigrams(processed_texts)
+
+  merge_trigrams = []
+  for couple in texts_trigrams:
+    merge_trigrams.append("_".join(list(couple)))
+
+  #merge_texts = list(itertools.chain.from_iterable(merge_bigrams))
+
+  wordcloud = WordCloud(width=1600, height=800, background_color ='white', max_words=number_words,prefer_horizontal=1,
+                min_font_size = 10).generate(' '.join(merge_trigrams))
+
+  plt.figure(figsize=(20,10), facecolor = None)
+  plt.imshow(wordcloud)#, interpolation='bilinear')
+  plt.axis("off")
+  plt.savefig('./template/nGrams/trigrams.png')
+  return './template/nGrams/trigrams.png'
   
   
 def create_word_cloud(texts, name_wc, number_words= 200):
@@ -176,7 +209,10 @@ def create_word_cloud(texts, name_wc, number_words= 200):
   merge_texts = list(itertools.chain.from_iterable(processed_texts))
   #print(merge_texts)
   
+  link_trigram = create_word_cloud_trigrams(texts, stop_words)
+  
   #save words
+  #with open('./temp/temp_words.txt', 'w', encoding='utf-8') as f:
   with open('./temp/temp_words.txt', 'w') as f:
     for item in merge_texts:
         f.write("%s\n" % item)
@@ -189,8 +225,11 @@ def create_word_cloud(texts, name_wc, number_words= 200):
   plt.imshow(wordcloud, interpolation='bilinear')
   plt.axis("off")
   #plt.show()
+  
+  link_graph = graphic_top_words(name_wc,10)
   plt.savefig('./template/wordClouds/'+name_wc+'.png')
-  return './template/wordClouds/'+name_wc+'.png'
+  
+  return ('./template/wordClouds/'+name_wc+'.png', link_graph, link_trigram)
   
 def update_wc(name_wc, words):
 	"""with open("delete_words.txt") as f:

@@ -4,8 +4,7 @@ import os, shutil
 app = Flask(__name__, template_folder="../template", static_folder="../template")
 
 
-def delete_wc():
-	folder = './template/wordClouds'
+def delete_wc(folder = './template/wordClouds'):
 	for filename in os.listdir(folder):
 		file_path = os.path.join(folder, filename)
 		try:
@@ -18,6 +17,8 @@ def delete_wc():
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
+	if os.path.isfile('./template/nGrams/trigrams.png'):
+		os.remove('./template/nGrams/trigrams.png')
 	return render_template('index.html')
 	
 
@@ -26,13 +27,14 @@ def entryPoint():
 	keyword = request.form.get('keyword')
 	if keyword == None:
 		delete_wc()
+		delete_wc('./template/histograms')
 		words = request.form.get('update')
 		words = words.replace(' ', '')
 		list_words = words.split(',')
 		indirizzo_update , barplot = wc.update_wc('update', list_words)
-		return render_template('view.html', graph = indirizzo_update, barplot=barplot)
-	indirizzo = wc.scrapper_main([keyword, 'wc'])
-	return render_template('view.html', graph = indirizzo)
+		return render_template('view.html', graph = indirizzo_update, barplot=barplot, trigram= './template/nGrams/trigrams.png')
+	indirizzo, barplot, trigram = wc.scrapper_main([keyword, 'wc'])
+	return render_template('view.html', graph = indirizzo, barplot=barplot, trigram= trigram)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',port=8050 ,debug=True)
