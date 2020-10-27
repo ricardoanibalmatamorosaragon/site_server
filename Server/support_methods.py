@@ -162,6 +162,32 @@ def graphic_top_words(name = 'bar_plot', number_words =10):
   fig.write_html('./template/histograms/'+name+'.html')
   return './template/histograms/'+name+'.html'
 
+def bigrams(text):
+  #text = ["this is a sentence", "so is this one"]
+  bigrams = [b for l in text for b in zip(l.split(" ")[:-1], l.split(" ")[1:])]
+  return bigrams
+
+def create_word_cloud_bigrams(texts, stop_words, number_words= 100):
+  processed_texts = []
+  for text in texts:
+    text_join = preprocessing(text, stop_words)
+    processed_texts.append(" ".join(text_join))
+
+  texts_bigrams = bigrams(processed_texts)
+  merge_bigrams = []
+  for couple in texts_bigrams:
+    merge_bigrams.append("_".join(list(couple)))
+
+  #merge_texts = list(itertools.chain.from_iterable(merge_bigrams))
+
+  wordcloud = WordCloud(width=1600, height=800, background_color ='white', max_words=number_words ,prefer_horizontal=1,
+                min_font_size = 10).generate(' '.join(merge_bigrams))
+
+  plt.figure(figsize=(20,10), facecolor = None)
+  plt.imshow(wordcloud)#, interpolation='bilinear')
+  plt.axis("off")
+  plt.savefig('./template/biGrams/bigrams.png')
+  return './template/biGrams/bigrams.png'
 
 def trigrams(text, n = 3):
   total_string = ''
@@ -210,6 +236,7 @@ def create_word_cloud(texts, name_wc, number_words= 200):
   #print(merge_texts)
   
   link_trigram = create_word_cloud_trigrams(texts, stop_words)
+  link_bigram = create_word_cloud_bigrams(texts, stop_words)
   
   #save words
   #with open('./temp/temp_words.txt', 'w', encoding='utf-8') as f:
@@ -229,7 +256,7 @@ def create_word_cloud(texts, name_wc, number_words= 200):
   link_graph = graphic_top_words(name_wc,10)
   plt.savefig('./template/wordClouds/'+name_wc+'.png')
   
-  return ('./template/wordClouds/'+name_wc+'.png', link_graph, link_trigram)
+  return ('./template/wordClouds/'+name_wc+'.png', link_graph, link_trigram, link_bigram)
   
 def update_wc(name_wc, words):
 	"""with open("delete_words.txt") as f:

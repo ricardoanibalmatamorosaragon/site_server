@@ -19,6 +19,8 @@ def delete_wc(folder = './template/wordClouds'):
 def home():
 	if os.path.isfile('./template/nGrams/trigrams.png'):
 		os.remove('./template/nGrams/trigrams.png')
+	if os.path.isfile('./template/biGrams/bigrams.png'):
+		os.remove('./template/biGrams/bigrams.png')
 	return render_template('index.html')
 	
 
@@ -32,9 +34,15 @@ def entryPoint():
 		words = words.replace(' ', '')
 		list_words = words.split(',')
 		indirizzo_update , barplot = wc.update_wc('update', list_words)
-		return render_template('view.html', graph = indirizzo_update, barplot=barplot, trigram= './template/nGrams/trigrams.png')
-	indirizzo, barplot, trigram = wc.scrapper_main([keyword, 'wc'])
-	return render_template('view.html', graph = indirizzo, barplot=barplot, trigram= trigram)
+		return render_template('view.html', graph = indirizzo_update, barplot=barplot
+			, trigram= './template/nGrams/trigrams.png', bigram= './template/biGrams/bigrams.png')
+			
+	if os.path.isfile('./template/nGrams/trigrams.png'):
+		os.remove('./template/nGrams/trigrams.png')
+	if os.path.isfile('./template/biGrams/bigrams.png'):
+		os.remove('./template/biGrams/bigrams.png')
+	indirizzo, barplot, trigram, bigram = wc.scrapper_main([keyword, 'wc'])
+	return render_template('view.html', graph = indirizzo, barplot=barplot, trigram= trigram, bigram=bigram)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',port=8050 ,debug=True)
